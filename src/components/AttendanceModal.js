@@ -1,58 +1,63 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const AttendanceModal = ({ selectedEmployees, selectedDate, status, onConfirm, onCancel }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+const AttendanceModal = ({ status, token, onClose, onConfirm }) => {
   const handleConfirm = async () => {
-    setIsSubmitting(true);
-    
-    const token = 'your-jwt-token-here'; // You will need to pass the JWT token here
-    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
-
-    // Loop through selected employees and send the API request
-    for (let i = 0; i < selectedEmployees.length; i++) {
-      const employee = selectedEmployees[i];
-      try {
-        const response = await fetch(
-          `http://13.233.103.177:8000/admin/mark-attendance/?user_id=${employee}&attendance_date=${formattedDate}&status=${status}`,
-          {
-            method: 'POST',
-            headers: {
-              'accept': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-
-        if (response.ok) {
-          console.log('Attendance marked:', data);
-        } else {
-          console.error('Error marking attendance:', data);
+    try {
+      const promises = status.map(async (log) => {
+        // Convert date from 'YYYY/MM/DD' to 'YYYY-MM-DD'
+        const formattedDate = log.date.replace(/\//g, '-');
+  
+        // Log the data being sent to the API
+        console.log('Sending Data:', {
+          user_id: log.id,
+          attendance_date: formattedDate,
+          status: log.status,
+        });
+  
+        // Construct the query parameters
+        const url = `http://13.233.103.177:8000/admin/mark-attendance/?user_id=${log.id}&attendance_date=${formattedDate}&status=${log.status}`;
+  
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Server error:', errorData);
+          throw new Error('Failed to mark attendance');
         }
-      } catch (error) {
-        console.error('Error:', error);
-      }
+  
+        return await response.json();
+      });
+  
+      await Promise.all(promises);
+      onConfirm(); // Confirm action
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to mark attendance');
     }
-
-    setIsSubmitting(false);
-    onConfirm(); // Call onConfirm to indicate completion
   };
+  
+  
+  
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h3>Attendance Confirmation</h3>
-        <p>
-          Are you sure you want to mark the attendance for the selected employees on {selectedDate.toLocaleDateString()} as {status}?
-        </p>
-        <div className="modal-actions">
-          <button onClick={handleConfirm} disabled={isSubmitting} className="confirm-btn">
-            {isSubmitting ? 'Submitting...' : 'Confirm'}
-          </button>
-          <button onClick={onCancel} className="cancel-btn">Cancel</button>
-        </div>
+        <h2>Attendance Confirmation</h2>
+        <ul>
+          {status.map((log, index) => (
+            <li key={index}>
+              {log.name} - {log.status} on {log.date}
+            </li>
+          ))}
+        </ul>
+        <button onClick={handleConfirm} className="confirm-btn">Confirm</button>
+        <button onClick={onClose} className="cancel-btn">Cancel</button>
       </div>
     </div>
   );

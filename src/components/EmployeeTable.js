@@ -1,37 +1,34 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css"; // Importing styles for the calendar
+import "react-datepicker/dist/react-datepicker.css";
 import Lottie from 'react-lottie';
-import successAnimation from '../assets/success-animation.json'; // Import your Lottie JSON
+import successAnimation from '../assets/success-animation.json';
+import AttendanceModal from './AttendanceModal'; // Import AttendanceModal
+
 import './EmployeeTable.css';
 
 const EmployeeTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State to control calendar visibility
-  const [status, setStatus] = useState(null); // Store status (Present/Absent/Leave)
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
-  const [isSuccess, setIsSuccess] = useState(false); // State to control success animation
-  const [employees, setEmployees] = useState([]); // State for employee data
-  const [token, setToken] = useState(''); // State for the API token
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [token] = useState(''); // Add your actual token here if needed
 
-  const calendarRef = useRef(null); // Ref for the calendar container
-  const buttonRef = useRef(null); // Ref for the date button
-
-  // Fetch employee data from API on component mount
+  // Fetch employee data from API
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
         const response = await fetch('http://13.233.103.177:8000/admin/users', {
           method: 'GET',
-          headers: {
-            accept: 'application/json',
-          },
+          headers: { accept: 'application/json' },
         });
         const data = await response.json();
-        setEmployees(data); // Update state with API data
+        setEmployees(data);
       } catch (error) {
         console.error('Error fetching employee data:', error);
       }
@@ -40,7 +37,7 @@ const EmployeeTable = () => {
     fetchEmployees();
   }, []);
 
-  // Filter employees by name or id
+  // Filter employees
   const filteredEmployees = employees.filter((employee) => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -50,15 +47,9 @@ const EmployeeTable = () => {
     );
   });
 
-  // Format date as YYYY/MM/DD
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero if necessary
-    const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if necessary
-    return `${year}/${month}/${day}`;
-  };
+  // Format date as YYYY-MM-DD
+  const formatDate = (date) => date.toISOString().split('T')[0];
 
-  // Handle single checkbox change
   const handleCheckboxChange = (id) => {
     const updatedSelectedEmployees = [...selectedEmployees];
     if (updatedSelectedEmployees.includes(id)) {
@@ -69,7 +60,6 @@ const EmployeeTable = () => {
     }
   };
 
-  // Handle "Select All" checkbox change
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedEmployees([]);
@@ -79,38 +69,13 @@ const EmployeeTable = () => {
     setSelectAll(!selectAll);
   };
 
-  // Handle Date Picker selection
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    setIsCalendarOpen(false); // Close calendar after selecting a date
+    setIsCalendarOpen(false);
   };
 
-  // Handle calendar visibility toggle
-  const toggleCalendar = () => {
-    setIsCalendarOpen(!isCalendarOpen);
-  };
+  const toggleCalendar = () => setIsCalendarOpen(!isCalendarOpen);
 
-  // Close calendar if clicked outside
-  const handleClickOutside = (event) => {
-    if (
-      calendarRef.current &&
-      !calendarRef.current.contains(event.target) &&
-      buttonRef.current &&
-      !buttonRef.current.contains(event.target)
-    ) {
-      setIsCalendarOpen(false);
-    }
-  };
-
-  // Attach and clean up click outside event listener
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // Handle action buttons (Present, Absent, Leave)
   const handleAction = (action) => {
     if (selectedEmployees.length === 0) {
       alert('Please select at least one employee.');
@@ -123,93 +88,42 @@ const EmployeeTable = () => {
         id: employee.user_id,
         name: `${employee.first_name} ${employee.last_name}`,
         status: action,
-        date: formatDate(selectedDate), // Format the selected date
+        date: formatDate(selectedDate),
       };
     });
 
-    setStatus(logMessage);
-    setShowModal(true); // Show the modal when action is taken
+    setStatus(logMessage); // Set status to the log message array
+    setShowModal(true); // Open modal
   };
 
-  // Handle Cancel Button (clear selections)
-  const handleCancel = () => {
-    setSelectedEmployees([]);
-    setSelectAll(false);
-    setStatus(null);
+  const handleModalClose = () => setShowModal(false); // Close modal
+  const handleConfirm = () => {
+    // Add logic for confirmation (if needed)
+    setIsSuccess(true);
+    setTimeout(() => {
+      setIsSuccess(false);
+      setShowModal(false);
+    }, 1500);
   };
 
-  // Handle Confirm action in the modal
-  const handleConfirm = async () => {
-    try {
-      const promises = status.map(async (log) => {
-        const response = await fetch('http://13.233.103.177:8000/admin/mark-attendance/', {
-          method: 'POST',
-          headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: new URLSearchParams({
-            user_id: log.id,
-            attendance_date: log.date,
-            status: log.status,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to mark attendance');
-        }
-
-        return await response.json(); // Assuming API response is in JSON format
-      });
-
-      await Promise.all(promises); // Wait for all API calls to complete
-      setIsSuccess(true); // Show success animation
-      setTimeout(() => {
-        setIsSuccess(false);
-        setShowModal(false); // Close modal after success animation
-      }, 1500);
-    } catch (error) {
-      console.error('Error confirming attendance:', error);
-      alert('Failed to mark attendance');
-    }
-  };
-
-  // Handle Modal Close (Cancel)
-  const handleModalCancel = () => {
-    setShowModal(false); // Close modal
-  };
-
-  // Lottie animation options
   const animationOptions = {
     loop: false,
     autoplay: true,
     animationData: successAnimation,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
+    rendererSettings: { preserveAspectRatio: 'xMidYMid slice' },
   };
 
   return (
     <div className="employee-table-container">
       <div className="table-header">
-        <div className="date-button-container">
-          <button
-            ref={buttonRef}
-            onClick={toggleCalendar}
-            className="date-button"
-          >
-            {formatDate(selectedDate)} {/* Show selected date in YYYY/MM/DD format */}
-          </button>
-          {isCalendarOpen && (
-            <div ref={calendarRef} className="calendar-overlay">
-              <DatePicker
-                selected={selectedDate}
-                onChange={handleDateChange}
-                inline
-              />
-            </div>
-          )}
-        </div>
+        <button onClick={toggleCalendar} className="date-button">
+          {formatDate(selectedDate)}
+        </button>
+        {isCalendarOpen && (
+          <div className="calendar-overlay">
+            <DatePicker selected={selectedDate} onChange={handleDateChange} inline />
+          </div>
+        )}
         <input
           type="text"
           placeholder="Search by name or ID"
@@ -223,12 +137,7 @@ const EmployeeTable = () => {
         <thead>
           <tr>
             <th>
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={handleSelectAll}
-                className="select-all-checkbox"
-              />
+              <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
             </th>
             <th>ID</th>
             <th>First Name</th>
@@ -256,31 +165,21 @@ const EmployeeTable = () => {
       </table>
 
       <div className="action-buttons">
-        <button onClick={() => handleAction('Present')} className="action-btn present-btn">Present</button>
-        <button onClick={() => handleAction('Absent')} className="action-btn absent-btn">Absent</button>
-        <button onClick={() => handleAction('Leave')} className="action-btn leave-btn">Leave</button>
-        <button onClick={handleCancel} className="action-btn cancel-btn">Cancel</button>
+        <button onClick={() => handleAction('present')} className="action-btn">Present</button>
+        <button onClick={() => handleAction('absent')} className="action-btn">Absent</button>
+        <button onClick={() => handleAction('leave')} className="action-btn">Leave</button>
       </div>
 
-      {/* Modal */}
+      {/* AttendanceModal opened when the button is clicked */}
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Attendance Confirmation</h2>
-            <ul>
-              {status?.map((log, index) => (
-                <li key={index}>
-                  {log.name} - {log.status} on {log.date}
-                </li>
-              ))}
-            </ul>
-            <button onClick={handleConfirm} className="confirm-btn">Confirm</button>
-            <button onClick={handleModalCancel} className="cancel-btn">Cancel</button>
-          </div>
-        </div>
+        <AttendanceModal
+          status={status} // Pass the selected status
+          token={token} // Pass the token
+          onClose={handleModalClose} // Handle modal close
+          onConfirm={handleConfirm} // Handle confirm action
+        />
       )}
 
-      {/* Success Animation */}
       {isSuccess && (
         <div className="success-animation">
           <Lottie options={animationOptions} height={100} width={100} />
