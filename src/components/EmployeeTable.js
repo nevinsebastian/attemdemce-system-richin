@@ -1,35 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css"; // Importing styles for the calendar
+import "react-datepicker/dist/react-datepicker.css";
+import Lottie from 'react-lottie';
+import successAnimation from '../assets/success-animation.json';
+import AttendanceModal from './AttendanceModal'; // Import AttendanceModal
+
 import './EmployeeTable.css';
 
 const EmployeeTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State to control calendar visibility
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [token] = useState(''); // Add your actual token here if needed
 
-  // Dummy employee data
-  const employees = [
-    { id: 1, first_name: 'John', last_name: 'Doe', role: 'Admin' },
-    { id: 2, first_name: 'Jane', last_name: 'Smith', role: 'Employee' },
-    { id: 3, first_name: 'Sara', last_name: 'Wilson', role: 'Employee' },
-    { id: 4, first_name: 'Michael', last_name: 'Brown', role: 'Manager' },
-    { id: 5, first_name: 'Emily', last_name: 'Davis', role: 'Employee' },
-  ];
+  // Fetch employee data from API
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await fetch('http://13.233.103.177:8000/admin/users', {
+          method: 'GET',
+          headers: { accept: 'application/json' },
+        });
+        const data = await response.json();
+        setEmployees(data);
+      } catch (error) {
+        console.error('Error fetching employee data:', error);
+      }
+    };
 
-  // Filter employees by name or id
+    fetchEmployees();
+  }, []);
+
+  // Filter employees
   const filteredEmployees = employees.filter((employee) => {
     const searchLower = searchTerm.toLowerCase();
     return (
       employee.first_name.toLowerCase().includes(searchLower) ||
       employee.last_name.toLowerCase().includes(searchLower) ||
-      employee.id.toString().includes(searchLower)
+      employee.user_id.toString().includes(searchLower)
     );
   });
 
-  // Handle single checkbox change
+  // Format date as YYYY-MM-DD
+  const formatDate = (date) => date.toISOString().split('T')[0];
+
   const handleCheckboxChange = (id) => {
     const updatedSelectedEmployees = [...selectedEmployees];
     if (updatedSelectedEmployees.includes(id)) {
@@ -40,42 +60,70 @@ const EmployeeTable = () => {
     }
   };
 
-  // Handle "Select All" checkbox change
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedEmployees([]);
     } else {
-      setSelectedEmployees(filteredEmployees.map((employee) => employee.id));
+      setSelectedEmployees(filteredEmployees.map((employee) => employee.user_id));
     }
     setSelectAll(!selectAll);
   };
 
-  // Handle Date Picker selection
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    setIsCalendarOpen(false); // Close calendar after selecting a date
+    setIsCalendarOpen(false);
   };
 
-  // Handle calendar visibility
-  const toggleCalendar = () => {
-    setIsCalendarOpen(!isCalendarOpen);
+  const toggleCalendar = () => setIsCalendarOpen(!isCalendarOpen);
+
+  const handleAction = (action) => {
+    if (selectedEmployees.length === 0) {
+      alert('Please select at least one employee.');
+      return;
+    }
+
+    const logMessage = selectedEmployees.map((id) => {
+      const employee = employees.find((emp) => emp.user_id === id);
+      return {
+        id: employee.user_id,
+        name: `${employee.first_name} ${employee.last_name}`,
+        status: action,
+        date: formatDate(selectedDate),
+      };
+    });
+
+    setStatus(logMessage); // Set status to the log message array
+    setShowModal(true); // Open modal
+  };
+
+  const handleModalClose = () => setShowModal(false); // Close modal
+  const handleConfirm = () => {
+    // Add logic for confirmation (if needed)
+    setIsSuccess(true);
+    setTimeout(() => {
+      setIsSuccess(false);
+      setShowModal(false);
+    }, 1500);
+  };
+
+  const animationOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: successAnimation,
+    rendererSettings: { preserveAspectRatio: 'xMidYMid slice' },
   };
 
   return (
     <div className="employee-table-container">
       <div className="table-header">
-        <div className="date-button-container">
-          <button onClick={toggleCalendar} className="date-button">
-            {selectedDate.toLocaleDateString()} {/* Show selected date */}
-          </button>
-          {isCalendarOpen && (
-            <DatePicker
-              selected={selectedDate}
-              onChange={handleDateChange}
-              inline
-            />
-          )}
-        </div>
+        <button onClick={toggleCalendar} className="date-button">
+          {formatDate(selectedDate)}
+        </button>
+        {isCalendarOpen && (
+          <div className="calendar-overlay">
+            <DatePicker selected={selectedDate} onChange={handleDateChange} inline />
+          </div>
+        )}
         <input
           type="text"
           placeholder="Search by name or ID"
@@ -89,12 +137,7 @@ const EmployeeTable = () => {
         <thead>
           <tr>
             <th>
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={handleSelectAll}
-                className="select-all-checkbox"
-              />
+              <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
             </th>
             <th>ID</th>
             <th>First Name</th>
@@ -104,22 +147,44 @@ const EmployeeTable = () => {
         </thead>
         <tbody>
           {filteredEmployees.map((employee) => (
-            <tr key={employee.id}>
+            <tr key={employee.user_id}>
               <td>
                 <input
                   type="checkbox"
-                  checked={selectedEmployees.includes(employee.id)}
-                  onChange={() => handleCheckboxChange(employee.id)}
+                  checked={selectedEmployees.includes(employee.user_id)}
+                  onChange={() => handleCheckboxChange(employee.user_id)}
                 />
               </td>
-              <td>{employee.id}</td>
+              <td>{employee.user_id}</td>
               <td>{employee.first_name}</td>
               <td>{employee.last_name}</td>
-              <td>{employee.role}</td>
+              <td>{employee.role_name}</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <div className="action-buttons">
+        <button onClick={() => handleAction('present')} className="action-btn">Present</button>
+        <button onClick={() => handleAction('absent')} className="action-btn">Absent</button>
+        <button onClick={() => handleAction('leave')} className="action-btn">Leave</button>
+      </div>
+
+      {/* AttendanceModal opened when the button is clicked */}
+      {showModal && (
+        <AttendanceModal
+          status={status} // Pass the selected status
+          token={token} // Pass the token
+          onClose={handleModalClose} // Handle modal close
+          onConfirm={handleConfirm} // Handle confirm action
+        />
+      )}
+
+      {isSuccess && (
+        <div className="success-animation">
+          <Lottie options={animationOptions} height={100} width={100} />
+        </div>
+      )}
     </div>
   );
 };

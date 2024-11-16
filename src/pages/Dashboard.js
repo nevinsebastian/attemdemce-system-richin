@@ -7,7 +7,7 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar />
-      <h2>Welcome to the Amin Dashboard</h2>
+      
       
       {/* Add the EmployeeTable component here */}
       <EmployeeTable />
