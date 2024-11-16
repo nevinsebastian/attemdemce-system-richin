@@ -1,10 +1,11 @@
+// App.js
 import React, { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
-import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
 
 const App = () => {
-  const { user } = useContext(AuthContext); // Ensure AuthContext is wrapped correctly in index.js
+  const { user } = useContext(AuthContext);
 
   return (
     <>

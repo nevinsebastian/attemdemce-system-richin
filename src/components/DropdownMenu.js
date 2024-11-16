@@ -1,5 +1,7 @@
+// components/DropdownMenu.js
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import './DropdownMenu.css';
 
 const DropdownMenu = () => {
   const { logout } = useContext(AuthContext);
@@ -9,11 +11,8 @@ const DropdownMenu = () => {
   };
 
   return (
-    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2">
-      <button
-        onClick={handleLogout}
-        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-      >
+    <div className="dropdown-menu">
+      <button onClick={handleLogout} className="dropdown-item">
         Logout
       </button>
     </div>

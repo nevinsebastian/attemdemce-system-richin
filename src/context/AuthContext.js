@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
         setUser(data.user);
         return true;
       } else {
+        console.error('Invalid credentials');
         return false;
       }
     } catch (error) {
@@ -35,7 +36,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

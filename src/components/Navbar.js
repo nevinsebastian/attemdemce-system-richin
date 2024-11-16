@@ -1,30 +1,39 @@
+// components/Navbar.js
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import AddEmployeeModal from './AddEmployeeModal';
 import DropdownMenu from './DropdownMenu';
+import './Navbar.css';
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleAvatarClick = () => {
+  // Toggle dropdown menu visibility
+  const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
-    <nav className="bg-gray-800 p-4 flex justify-between items-center">
-      <div className="text-white text-2xl font-bold">Admin Dashboard</div>
+    <nav className="navbar">
+      <h1>Admin Dashboard</h1>
+      <div className="navbar-actions">
+        <button className="add-employee-btn" onClick={() => setIsModalOpen(true)}>
+          <span>+ Add Employee</span>
+        </button>
 
-      {user && (
+        {/* Avatar with Dropdown */}
         <div className="relative">
-          <button
-            onClick={handleAvatarClick}
-            className="flex items-center justify-center w-10 h-10 bg-indigo-500 text-white rounded-full font-bold"
-          >
-            {user.first_name[0]}
-          </button>
+          <div className="user-avatar" onClick={toggleDropdown}>
+            {user?.first_name?.charAt(0).toUpperCase()}
+          </div>
           {isDropdownOpen && <DropdownMenu />}
         </div>
-      )}
+      </div>
+
+      {/* Add Employee Modal */}
+      {isModalOpen && <AddEmployeeModal onClose={() => setIsModalOpen(false)} />}
     </nav>
   );
 };

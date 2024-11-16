@@ -1,0 +1,33 @@
+/* components/Navbar.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #2f3e46;
+  color: white;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+.add-employee-btn {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.user-avatar {
+  background-color: #d7263d;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  text-transform: uppercase;
+}
