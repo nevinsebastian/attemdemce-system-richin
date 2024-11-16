@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await fetch('http://13.233.103.177:8000/login', {
+      const response = await fetch('https://13.233.103.177:8000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

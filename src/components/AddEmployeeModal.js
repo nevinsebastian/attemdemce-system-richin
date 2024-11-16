@@ -22,7 +22,7 @@ const AddEmployeeModal = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://13.233.103.177:8000/admin/create_user', {
+      const response = await fetch('https://13.233.103.177:8000/admin/create_user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

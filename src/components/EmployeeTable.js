@@ -23,7 +23,7 @@ const EmployeeTable = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await fetch('http://13.233.103.177:8000/admin/users', {
+        const response = await fetch('https://13.233.103.177:8000/admin/users', {
           method: 'GET',
           headers: { accept: 'application/json' },
         });
