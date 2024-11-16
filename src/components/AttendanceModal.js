@@ -15,7 +15,7 @@ const AttendanceModal = ({ status, token, onClose, onConfirm }) => {
         });
   
         // Construct the query parameters
-        const url = `http://13.233.103.177:8000/admin/mark-attendance/?user_id=${log.id}&attendance_date=${formattedDate}&status=${log.status}`;
+        const url = `https://13.233.103.177:8000/admin/mark-attendance/?user_id=${log.id}&attendance_date=${formattedDate}&status=${log.status}`;
   
         const response = await fetch(url, {
           method: 'POST',
