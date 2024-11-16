@@ -25,6 +25,9 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
+
+        // Store the token in localStorage after login
+        localStorage.setItem('auth_token', data.token);  // Store token here
         return true;
       } else {
         console.error('Invalid credentials');
@@ -38,6 +41,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('auth_token');  // Remove token on logout
   };
 
   return (

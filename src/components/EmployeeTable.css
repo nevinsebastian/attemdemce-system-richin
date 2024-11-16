@@ -1,0 +1,69 @@
+/* components/EmployeeTable.css */
+.employee-table-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.date-button-container {
+  position: relative;
+}
+
+.date-button {
+  padding: 8px 15px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.date-button:hover {
+  background-color: #0056b3;
+}
+
+.search-bar {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 300px;
+  margin-left: auto;
+  display: inline-block;
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employee-table th,
+.employee-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.employee-table th {
+  background-color: #f2f2f2;
+}
+
+.employee-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.select-all-checkbox {
+  cursor: pointer;
+}
+
+/* Style DatePicker */
+.react-datepicker {
+  position: absolute;
+  z-index: 1000;
+  top: 50px;
+}
