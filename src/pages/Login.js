@@ -19,7 +19,7 @@ const Login = () => {
         {/* Logo and Branding */}
         <div className="text-center mb-6">
          
-          <h2 className="text-4xl font-bold text-indigo-700">RosResurch</h2>
+          <h2 className="text-4xl font-bold text-indigo-700">RosResearch</h2>
           <p className="text-xl text-gray-500 mt-2">Welcome Back! Please login to your account</p>
         </div>
 

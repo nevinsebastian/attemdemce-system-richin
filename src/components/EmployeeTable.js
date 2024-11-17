@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import Lottie from 'react-lottie';
@@ -156,7 +157,11 @@ const EmployeeTable = () => {
                 />
               </td>
               <td>{employee.user_id}</td>
-              <td>{employee.first_name}</td>
+              <td>
+                <Link to={`/user-details/${employee.user_id}`} className="user-name-link">
+                  {employee.first_name}
+                </Link>
+              </td>
               <td>{employee.last_name}</td>
               <td>{employee.role_name}</td>
             </tr>
