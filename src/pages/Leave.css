@@ -1,0 +1,68 @@
+.leave-page {
+  padding: 20px;
+}
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  text-align: center;
+}
+
+.tab.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.leave-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.leave-table table th, .leave-table table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.leave-table table th {
+  background-color: #f2f2f2;
+}
+
+.leave-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.leave-action-buttons {
+  margin: 10px;
+}
+
+.approve-btn, .deny-btn {
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+}
+
+.approve-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.deny-btn {
+  background-color: #f44336;
+  color: white;
+}
