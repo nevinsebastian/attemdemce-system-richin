@@ -6,7 +6,7 @@ import LeaveModal from '../components/LeaveModal'; // Import the modal component
 const Leave = () => {
   const [activeTab, setActiveTab] = useState('pending');
   const [pendingLeaves, setPendingLeaves] = useState([]);
-  const [doneLeaves, setDoneLeaves] = useState([]);
+  const [doneLeaves] = useState([]);
   const [selectedLeaves, setSelectedLeaves] = useState([]); // Store selected leave requests
   const [modalData, setModalData] = useState(null); // Data for the modal
   const [isModalOpen, setIsModalOpen] = useState(false);

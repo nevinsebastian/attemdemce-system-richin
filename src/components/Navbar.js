@@ -16,6 +16,9 @@ const Navbar = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+  const handleDashboardClick = () => {
+    navigate('/'); // Route to the homepage
+  };
 
   // Navigate to Leave page
   const handleLeaveClick = () => {
@@ -35,7 +38,9 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <h1 className="navbar-logo">Admin Dashboard</h1>
+        <h1 className="navbar-logo" onClick={handleDashboardClick}>
+        Admin Dashboard
+      </h1>
 
       {/* Navbar actions */}
       <div className="navbar-actions">
