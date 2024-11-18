@@ -1,0 +1,58 @@
+.big-calendar {
+  width: 100%;
+  height: 65vh; /* Increased height for a larger calendar */
+  font-size: 1.2rem; /* Larger text for better readability */
+  background-color: #f9f9f9; /* Light background for better contrast */
+  border-radius: 8px;
+  padding: 1em;
+}
+
+/* Ensure the month and year in the header are clearly visible */
+.react-calendar__navigation button {
+  color: #1a202c !important; /* Dark text for better visibility */
+  font-weight: bold;
+}
+
+/* Highlight attendance dates */
+.highlight-attendance {
+  background-color: #4caf50 !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+.react-calendar {
+  border: none;
+  background-color: #ffffff;
+}
+
+.react-calendar__tile {
+  background-color: #ffffff !important;
+  color: #333 !important;
+  border-radius: 8px;
+}
+
+/* Today's date styling */
+.react-calendar__tile--now {
+  background: #ffeb3b !important; /* Highlight today's date */
+  color: black !important;
+  font-weight: bold;
+  border-radius: 50%;
+}
+
+/* Selected date styling */
+.react-calendar__tile--active {
+  background-color: #2196f3 !important; /* Highlight selected date */
+  color: white !important;
+  border-radius: 50%;
+}
+
+/* Hover effect for dates */
+.react-calendar__tile:hover {
+  background-color: #eeeeee !important;
+}
+
+/* Improve visibility of weekdays (Sun, Mon, etc.) */
+.react-calendar__month-view__weekdays {
+  color: #1a202c !important; /* Dark text for weekdays */
+  font-weight: bold;
+}
