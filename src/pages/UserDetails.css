@@ -1,0 +1,42 @@
+.big-calendar {
+  width: 100%;
+  height: 70vh;
+  font-size: 1.2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1em;
+}
+
+.present-day {
+  background-color: #4caf50 !important; /* Green for present */
+  color: white !important;
+  border-radius: 50%;
+}
+
+.absent-day {
+  background-color: #f44336 !important; /* Red for absent */
+  color: white !important;
+  border-radius: 50%;
+}
+
+.leave-day {
+  background-color: #ffeb3b !important; /* Yellow for leave */
+  color: black !important;
+  border-radius: 50%;
+}
+
+.react-calendar__tile {
+  background-color: #ffffff !important;
+  color: #333 !important;
+}
+
+.react-calendar__tile--now {
+  background: #3f51b5 !important; /* Highlight today's date */
+  color: white !important;
+  font-weight: bold;
+}
+
+.react-calendar__navigation button {
+  color: #1a202c !important;
+  font-weight: bold;
+}
