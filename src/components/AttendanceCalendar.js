@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
 import { parseISO } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import moment from 'moment';
 
 const AttendanceCalendar = ({ userId, attendanceData }) => {
   const [events, setEvents] = useState([]);
-  
-  // Localizer using date-fns
+
+  // Localizer using moment.js
   const localizer = momentLocalizer(moment);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const AttendanceCalendar = ({ userId, attendanceData }) => {
     const mappedEvents = attendanceData.map((attendance) => {
       const eventDate = parseISO(attendance.date);
       let eventColor = '';
-      
+
       // Determine the color based on the attendance status
       switch (attendance.status) {
         case 'present':
@@ -30,7 +30,7 @@ const AttendanceCalendar = ({ userId, attendanceData }) => {
         default:
           eventColor = 'gray';
       }
-      
+
       return {
         title: attendance.status.charAt(0).toUpperCase() + attendance.status.slice(1),
         start: eventDate,
@@ -38,14 +38,14 @@ const AttendanceCalendar = ({ userId, attendanceData }) => {
         color: eventColor,
       };
     });
-    
+
     setEvents(mappedEvents);
   }, [attendanceData]);
 
   return (
     <div className="w-full max-w-6xl bg-white shadow-lg rounded-lg p-8 mt-8">
       <h2 className="text-xl font-semibold mb-4 text-gray-700">Attendance Calendar</h2>
-      
+
       {/* Calendar */}
       <Calendar
         localizer={localizer}
@@ -62,6 +62,30 @@ const AttendanceCalendar = ({ userId, attendanceData }) => {
             fontWeight: 'bold',
           },
         })}
+        
+        // Disable all views (Month, Week, Day, Agenda)
+        views={['month']} // Only show the month view
+
+        // Remove the default toolbar with view navigation buttons
+        components={{
+          toolbar: ({ label, onNavigate }) => (
+            <div className="flex justify-between items-center px-4 py-2">
+              <button
+                className="p-2 bg-gray-300 rounded-md"
+                onClick={() => onNavigate('PREV')}
+              >
+                Prev
+              </button>
+              <span className="font-bold text-lg">{label}</span>
+              <button
+                className="p-2 bg-gray-300 rounded-md"
+                onClick={() => onNavigate('NEXT')}
+              >
+                Next
+              </button>
+            </div>
+          ),
+        }}
       />
       
       {/* Legend */}
