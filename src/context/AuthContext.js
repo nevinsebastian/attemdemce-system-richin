@@ -24,13 +24,18 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        setUser(data.user);
+        const { user } = data;
 
-        // Store the token in localStorage after login
-        localStorage.setItem('auth_token', data.token);  // Store token here
+        // Store token and role
+        localStorage.setItem('auth_token', data.access_token);
+        localStorage.setItem('role', user.role_name);
+
+        // Fetch user details by user_id
+        const userDetails = await fetchUserDetails(user.user_id);
+        setUser(userDetails);
+
         return true;
       } else {
-        console.error('Invalid credentials');
         return false;
       }
     } catch (error) {
@@ -39,9 +44,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchUserDetails = async (userId) => {
+    const token = localStorage.getItem('auth_token');
+    try {
+      const response = await fetch(`https://13.233.103.177:8000/admin/users/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        return await response.json();
+      } else {
+        console.error('Failed to fetch user details');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      return null;
+    }
+  };
+
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('auth_token');  // Remove token on logout
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('role');
   };
 
   return (
