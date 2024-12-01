@@ -21,7 +21,6 @@ const EmpLeaveModal = ({ onClose }) => {
       );
 
       if (response.ok) {
-        const data = await response.json();
         alert('Leave request submitted successfully.');
         onClose(); // Close the modal after submission
       } else {
