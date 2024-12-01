@@ -38,11 +38,16 @@ function EmployeeDash() {
   return (
     <div>
       <EmpNavbar />
-      {attendanceData.length > 0 ? (
-        <AttendanceCalendar userId={user?.user_id} attendanceData={attendanceData} />
-      ) : (
-        <p>No attendance data available</p>
-      )}
+      <div
+        className="flex items-center justify-center min-h-screen bg-gray-100"
+        style={{ paddingTop: '4rem' }} // Adjust padding if needed to avoid navbar overlap
+      >
+        {attendanceData.length > 0 ? (
+          <AttendanceCalendar userId={user?.user_id} attendanceData={attendanceData} />
+        ) : (
+          <p className="text-gray-700 text-lg">No attendance data available</p>
+        )}
+      </div>
     </div>
   );
 }
