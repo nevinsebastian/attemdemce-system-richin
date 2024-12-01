@@ -53,6 +53,26 @@
   background-color: #ff4b4b;
 }
 
+.navbar-btn, .mobile-dropdown-btn, .dropdown-btn {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.navbar-btn:hover, .mobile-dropdown-btn:hover, .dropdown-btn:hover {
+  background-color: #0056b3;
+}
+
+.mobile-dropdown-btn {
+  width: 100%;
+  text-align: left;
+}
+
+
 /* Mobile Menu */
 .mobile-menu-icon {
   font-size: 30px;

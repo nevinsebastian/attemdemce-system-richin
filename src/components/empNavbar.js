@@ -11,6 +11,13 @@ const EmpNavbar = () => {
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+  // Navigate to the Leave page
+  const handleLeave = () => {
+    navigate('/empleave');
+  };
+
+  // Logout functionality
   const handleLogout = () => {
     navigate('/login');
   };
@@ -22,6 +29,11 @@ const EmpNavbar = () => {
       </h1>
 
       <div className="navbar-actions">
+        {/* Regular Navbar Button for Leave */}
+        <button onClick={handleLeave} className="navbar-btn">
+          Leave
+        </button>
+
         <div className="relative">
           <div className="user-avatar" onClick={toggleDropdown}>
             {user?.first_name?.charAt(0).toUpperCase()}
@@ -29,13 +41,29 @@ const EmpNavbar = () => {
         </div>
       </div>
 
+      {/* Hamburger Menu for Mobile */}
       <div className="mobile-menu-icon" onClick={toggleMobileMenu}>
         ☰
       </div>
 
       {isMobileMenuOpen && (
         <div className="mobile-dropdown">
+          <button onClick={handleLeave} className="mobile-dropdown-btn">
+            Leave
+          </button>
           <button onClick={handleLogout} className="mobile-dropdown-btn">
+            Logout
+          </button>
+        </div>
+      )}
+
+      {/* Dropdown Menu for Desktop */}
+      {isDropdownOpen && (
+        <div className="dropdown-menu">
+          <button onClick={handleLeave} className="dropdown-btn">
+            Leave
+          </button>
+          <button onClick={handleLogout} className="dropdown-btn">
             Logout
           </button>
         </div>

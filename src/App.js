@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import UserDetails from './pages/UserDetails';
 import Leave from './pages/Leave';
 import EmployeeDash from './pages/employeeDash';
+import EmpLeave from './components/EmpLeave';
 
 const App = () => {
   const { user } = useContext(AuthContext);
@@ -31,6 +32,7 @@ const App = () => {
             <>
               <Route path="/" element={<EmployeeDash />} />
               <Route path="*" element={<Navigate to="/" />} />
+              <Route path="empleave" element={<EmpLeave/>} />
             </>
           ) : (
             <Route path="*" element={<Navigate to="/login" />} />
