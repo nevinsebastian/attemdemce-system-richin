@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import EmpNavbar from './empNavbar';
-import LeaveModal from './LeaveModal'; // Import the modal component
+import EmpLeaveModal from './EmpLeaveModal';
 import { FaPlus } from 'react-icons/fa'; // For the plus icon
 
 function EmpLeave() {
@@ -74,7 +74,7 @@ function EmpLeave() {
           </tbody>
         </table>
       </div>
-      {isModalOpen && <LeaveModal onClose={toggleModal} />}
+      {isModalOpen && <EmpLeaveModal onClose={toggleModal} />}
     </div>
   );
 }
