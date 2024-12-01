@@ -1,23 +1,42 @@
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthContext } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import UserDetails from './pages/UserDetails'; // Import UserDetails component
-import Leave from './pages/Leave'; // Import the Leave component
+import UserDetails from './pages/UserDetails';
+import Leave from './pages/Leave';
+import EmployeeDash from './pages/employeeDash';
+import EmpLeave from './components/EmpLeave';
 
 const App = () => {
   const { user } = useContext(AuthContext);
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem('role');
+    if (storedRole) setRole(storedRole);
+  }, [user]);
 
   return (
     <Router>
       <Routes>
         {user ? (
-          <>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/user-details/:userId" element={<UserDetails />} /> {/* Add route for UserDetails */}
-            <Route path="/leave" element={<Leave />} /> {/* Add route for Leave page */}
-          </>
+          role === 'admin' ? (
+            <>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/user-details/:userId" element={<UserDetails />} />
+              <Route path="/leave" element={<Leave />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </>
+          ) : role === 'employee' ? (
+            <>
+              <Route path="/" element={<EmployeeDash />} />
+              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="empleave" element={<EmpLeave/>} />
+            </>
+          ) : (
+            <Route path="*" element={<Navigate to="/login" />} />
+          )
         ) : (
           <Route path="/" element={<Login />} />
         )}
